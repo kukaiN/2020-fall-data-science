@@ -127,7 +127,7 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 
 ### For the next section, use the  `bigquery-public-data.google_political_ads.advertiser_weekly_spend` table.
 1. Using the `advertiser_weekly_spend` table, write a query that finds the advertiser_name that spent the most in usd.
-	```
+	```sql
 	SELECT
   		advertiser_name,
   		SUM(spend_usd) AS total_usd
@@ -151,7 +151,7 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 	```
 
 4. Using the `advertiser_weekly_spend` table, write a query that returns the sum of spend by week (using week_start_date) in usd for the month of August only.
-	```
+	```sql
 	WITH
 		T AS (
 			SELECT
@@ -182,7 +182,7 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 	50
 	```
 7. Write a query that has, in the US region only, the total spend in usd for each advertiser_name and how many ads they ran. (Hint, you're going to have to join tables for this one).
-	```
+	```sql
 	WITH
 		T AS (
 			SELECT
@@ -210,7 +210,7 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 
 	```
 8. For each advertiser_name, find the average spend per ad.
-	```
+	```sql
 	WITH
 	T AS (
 		SELECT
@@ -277,8 +277,34 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 	```
 
 3. Write a query that, for every station_name, has the amount of trips that started there and the amount of trips that ended there. (Hint, use two temporary tables, one that counts the amount of starts, the other that counts the number of ends, and then join the two.)
-	```
-	[YOUR QUERY HERE]
+	```sql
+	WITH
+		T AS (
+			SELECT
+				start_station_name,
+				COUNT(start_station_name) AS start_count
+			FROM
+				`bigquery-public-data.new_york_citibike.citibike_trips`
+			GROUP BY
+				start_station_name),
+	TT AS (
+		SELECT
+			end_station_name,
+			COUNT(end_station_name) AS end_count
+		FROM
+			`bigquery-public-data.new_york_citibike.citibike_trips`
+		GROUP BY
+			end_station_name)
+	SELECT
+		T.start_station_name AS station_name,
+		T.start_count,
+		TT.end_count
+	FROM
+		T
+	JOIN
+		TT
+	ON
+		T.start_station_name = TT.end_station_name
 	```
 # The next section is the Google Colab section.
 1. Open up this [this Colab notebook](https://colab.research.google.com/drive/1kHdTtuHTPEaMH32GotVum41YVdeyzQ74?usp=sharing).
