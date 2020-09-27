@@ -132,32 +132,85 @@ LIMIT
 
 4. Using the `advertiser_weekly_spend` table, write a query that returns the sum of spend by week (using week_start_date) in usd for the month of August only.
 	```
-	[YOUR QUERY HERE]with T as (SELECT
+	WITH
+  T AS (
+  SELECT
+    week_start_date,
+    SUM(spend_usd) AS total_usd
+  FROM
+    `bigquery-public-data.google_political_ads.advertiser_weekly_spend`
+  GROUP BY
+    week_start_date ),
+  TT AS(
+  SELECT
+    EXTRACT(MONTH
+    FROM
+      week_start_date) AS the_month,
+    *
+  FROM
+    T)
+SELECT
   week_start_date,
-  SUM(spend_usd) AS total_usd
+  total_usd
 FROM
-  `bigquery-public-data.google_political_ads.advertiser_weekly_spend`
-GROUP BY
-  week_start_date
-
-)
-Select * from T
+  TT
+WHERE
+  the_month = 8
+ORDER BY
+  week_start_date DESC
 	```
 6.  How many ads did the 'TOM STEYER 2020' campaign run? (No need to insert query here, just type in the answer.)
 	```
-	[YOUR ANSWER HERE]
+	50
 	```
 7. Write a query that has, in the US region only, the total spend in usd for each advertiser_name and how many ads they ran. (Hint, you're going to have to join tables for this one).
 	```
-		[YOUR QUERY HERE]
+		WITH
+  T AS (
+  SELECT
+   advertiser_name, sum(spend_usd) as total_spending
+  FROM
+    `bigquery-public-data.google_political_ads.advertiser_weekly_spend`
+    where
+  election_cycle = "US-Federal-2018"
+  group by advertiser_name
+
+  ),
+  TT AS (
+  SELECT
+    advertiser_name, count(advertiser_id) as ad_counts
+  FROM
+    `bigquery-public-data.google_political_ads.advertiser_weekly_spend`
+     where
+  election_cycle = "US-Federal-2018"
+   group by advertiser_name
+
+  )
+  select A.advertiser_name, A.total_spending, B.ad_counts spend_eur From T as A join TT as B on A.advertiser_name = B.advertiser_name
+
 	```
 8. For each advertiser_name, find the average spend per ad.
 	```
-	[YOUR QUERY HERE]
+	WITH
+  T AS (
+  SELECT
+    advertiser_name,
+    SUM(spend_usd) AS total_spending,
+    count(advertiser_id) as ad_count
+  FROM
+    `bigquery-public-data.google_political_ads.advertiser_weekly_spend`
+  WHERE
+    election_cycle = "US-Federal-2018"
+  GROUP BY
+    advertiser_name )
+SELECT
+  advertiser_name, (total_spending/ad_count) as ave_spend_per_ad
+FROM
+  T
 	```
 10. Which advertiser_name had the lowest average spend per ad that was at least above 0.
 	```
-	[YOUR QUERY HERE]
+	AMERICAN JOBS AND GROWTH PAC with 25000.0 USD
 	```
 ## For this next section, use the `new_york_citibike` datasets.
 
