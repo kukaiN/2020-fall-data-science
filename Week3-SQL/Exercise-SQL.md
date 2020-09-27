@@ -14,7 +14,7 @@
 For this section of the exercise we will be using the `bigquery-public-data.austin_311.311_service_requests`  table.
 
 5. Write a query that tells us how many rows are in the table.
-	```
+	```sql
 	SELECT
 		COUNT(*) as total_row_counts
 	FROM
@@ -22,7 +22,7 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 	```
 
 7. Write a query that tells us how many _distinct_ values there are in the complaint_description column.
-	```
+	```sql
 	SELECT
 		complaint_description,
 		COUNT(DISTINCT complaint_description) AS distinct_complaints
@@ -33,7 +33,7 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 	```
 
 8. Write a query that counts how many times each owning_department appears in the table and orders them from highest to lowest.
-	```
+	```sql
 	SELECT
 		owning_department,
 		COUNT(owning_department) AS dept_counts
@@ -46,16 +46,16 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 	```
 
 9. Write a query that lists the top 5 complaint_description that appear most and the amount of times they appear in this table. (hint... limit)
-	```
+	```sql
 	WITH
 		T AS(
-		SELECT
-			complaint_description,
-			COUNT(complaint_description) AS distinct_complaints
-		FROM
-			`bigquery-public-data.austin_311.311_service_requests`
-		GROUP BY
-			complaint_description )
+			SELECT
+				complaint_description,
+				COUNT(complaint_description) AS distinct_complaints
+			FROM
+				`bigquery-public-data.austin_311.311_service_requests`
+			GROUP BY
+				complaint_description )
 	SELECT
 		*
 	FROM
@@ -66,7 +66,7 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 		5
 	```
 10. Write a query that lists and counts all the complaint_description, just for the where the owning_department is 'Animal Services Office'.
-	```
+	```sql
 	SELECT
 		complaint_description,
 		COUNT(complaint_description) AS distinct_complaints
@@ -79,7 +79,7 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 	```
 
 11. Write a query to check if there are any duplicate values in the unique_key column (hint.. There are two was to do this, one is to use a temporary table for the groupby, then filter for values that have more than one count, or, using just one table but including the  `having` function).
-	```
+	```sql
 	SELECT
 		unique_key,
 		COUNT(unique_key) AS counts
@@ -95,7 +95,7 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 ### For the next question, use the `census_bureau_usa` tables.
 
 1. Write a query that returns each zipcode and their population for 2000 and 2010.
-	```
+	```sql
 	WITH
 		T2000 AS (
 			SELECT
@@ -132,7 +132,7 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
   		advertiser_name,
   		SUM(spend_usd) AS total_usd
 	FROM
-  	`bigquery-public-data.google_political_ads.advertiser_weekly_spend`
+  		`bigquery-public-data.google_political_ads.advertiser_weekly_spend`
 	GROUP BY
 		advertiser_name
 	ORDER BY
@@ -235,12 +235,45 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 ## For this next section, use the `new_york_citibike` datasets.
 
 1. Who went on more bike trips, Males or Females?
-	```
-	[YOUR QUERY HERE]
+	```sql
+	SELECT
+		gender,
+		COUNT(gender) AS counts
+	FROM
+		`bigquery-public-data.new_york_citibike.citibike_trips`
+	GROUP BY
+		gender
+	ORDER BY
+		counts DESC
+	LIMIT
+		1
 	```
 2. What was the average, shortest, and longest bike trip taken in minutes?
+	```sql
+	with T as
+		(SELECT
+			tripduration,
+			(tripduration/60) as trip_minute
+		FROM
+			`bigquery-public-data.new_york_citibike.citibike_trips`
+		where
+			tripduration is not Null
+		)
+	Select
+		-- trip_minute
+		avg(trip_minute)
+	FROM
+		T
+	/* -- used to find max and min
+	ORDER BY
+		trip_minute DESC --ASC
+	*/
 	```
-	[YOUR QUERY HERE]
+
+	```
+	longest: 325167.48333333334
+	shortest: 1.0 (smallest number excluding Null)
+	Average: 16.041516425648233 (average excluding Null)
 	```
 
 3. Write a query that, for every station_name, has the amount of trips that started there and the amount of trips that ended there. (Hint, use two temporary tables, one that counts the amount of starts, the other that counts the number of ends, and then join the two.)
