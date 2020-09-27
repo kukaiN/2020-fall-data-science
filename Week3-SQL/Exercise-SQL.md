@@ -15,10 +15,10 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 
 5. Write a query that tells us how many rows are in the table.
 	```
-SELECT
-  COUNT(*) as total_row_counts
-FROM
-  `bigquery-public-data.austin_311.311_service_requests` AS T
+	SELECT
+	COUNT(*) as total_row_counts
+	FROM
+	`bigquery-public-data.austin_311.311_service_requests` AS T
 	```
 
 7. Write a query that tells us how many _distinct_ values there are in the complaint_description column.
