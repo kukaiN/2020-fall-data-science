@@ -313,5 +313,5 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 4. Click the 'Share' button on the top right.
 5. Change the permissions so anyone with link can view.
 6. Copy the link and paste it right below this line.
-	* YOUR LINK:  ________________________________
-9. Complete the two questions in the colab notebook file.
+	* YOUR LINK:  [hyperlink to colab](https://colab.research.google.com/drive/1rxeF4wLQV9SbgzXE7OBUmqkpS6KDoGge?usp=sharing)
+7. Complete the two questions in the colab notebook file.
